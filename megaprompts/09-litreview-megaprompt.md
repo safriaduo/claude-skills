@@ -32,7 +32,7 @@ The skill must specify how to:
 The generated skill must follow this structure:
 
 ```
-1. Data Integrity Principles (source / counting / tool constraints)
+1. Agent Integrity Rules (source / counting / tool constraints)
 2. Error Handling rules
 3. Phase 0: Grill-Me Intake (3 forcing questions before recon search)
 4. Phase 1: Initial Reconnaissance (one broad search)
@@ -98,7 +98,7 @@ The skill MUST address these concerns:
 
 ## Source Discipline Rules (Must Be Stated)
 
-The skill must include an explicit “Data Integrity Principles” block:
+The skill must include an explicit "Agent Integrity Rules" block (research-pack convention):
 
 - **Source discipline**: Only cite Consensus-returned papers from this session. Training knowledge labeled and excluded from counts. Sparse results stated explicitly, never silently filled.
 - **Counting discipline**: Three numbers tracked — searches executed / unique papers received / papers cited. Every cited paper has retrievable Consensus URL from this session.
@@ -188,14 +188,15 @@ Reference the docx skill for setup patterns and best practices.
 
 ## Trigger Phrases (for frontmatter description)
 
-- “I’m starting a literature review on X”
-- “I’m writing a paper on X”
-- “help me research X”
-- “I’m doing research on X”
-- “can you help me research X”
-- “literature review on [topic]”
+- "litreview on [topic]"
+- "literature review on [topic]"
+- "I'm starting a literature review on X"
+- "I'm writing a paper on X"
+- "help me research X"
+- "I'm doing research on X"
+- "can you help me research X"
 
-**Do NOT trigger for:** single one-off paper searches where user wants quick list — that’s a plain Consensus search.
+**Do NOT trigger for:** single one-off paper searches where user wants quick list — that's a plain Consensus search.
 
 ## Error Handling Requirements
 
@@ -248,7 +249,7 @@ description: "Academic literature orientation skill that searches papers via Con
 - [ ] Frontmatter parses as YAML (name: litreview)
 - [ ] Output target path uses `${SKILLS_DIR}/litreview/SKILL.md`
 - [ ] Word count 2,200–2,800
-- [ ] Data Integrity Principles block present at top
+- [ ] Agent Integrity Rules block present at top
 - [ ] Grill-me Phase 0 intake: 3 forcing questions before recon search
 - [ ] Q1 (research question) refuses vague answers
 - [ ] Q2 (framework hint) forcing choice with "you pick" default

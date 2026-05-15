@@ -29,7 +29,7 @@ Specialist registry the router knows about:
 |`litreview` |literature review / PICO / SPIDER / systematic review / "review papers on"|Academic literature orientation |
 |`syllabus`  |syllabus attached / course outline / "reading list for my class"     |Course supplementary reading         |
 |`patent`    |prior art / FTO / freedom to operate / patent / invention novelty    |Patent prior-art + landscape         |
-|`dossier`   |"research [company]" / dossier / due diligence / "prep me for meeting"|Decision-grade entity research      |
+|`dossier`   |"dossier on" / "due diligence" / "background check" / "competitor research" / "prep me for [meeting]"|Decision-grade entity research      |
 
 ## Non-Generic Framing
 
@@ -129,10 +129,11 @@ Document the classification logic explicitly. This is **deterministic, not LLM-r
 SIGNALS = {
   pulse:    ["reddit", "hn", "hacker news", "x.com", "twitter", "buzz",
              "sentiment", "trending", "what are people saying",
-             "what's happening", "the conversation around"],
-  grants:   ["nih", "grant", "r01", "r21", "k-award", "reporter",
+             "what's happening", "the conversation around",
+             "pulse on", "take the pulse", "current conversation"],
+  grants:   ["nih", "grant", "grants for", "r01", "r21", "k-award", "reporter",
              "nosi", "funding", "fda", "study section", "principal investigator"],
-  litreview:["literature review", "lit review", "pico", "spider",
+  litreview:["literature review", "lit review", "litreview", "pico", "spider",
              "systematic review", "review papers on", "research papers on",
              "papers about", "meta-analysis"],
   syllabus: ["syllabus", "course outline", "curriculum", "reading list",
@@ -141,12 +142,19 @@ SIGNALS = {
              "patent landscape", "invention", "novelty search",
              "patent search", "ip landscape"],
   dossier:  ["dossier on", "due diligence", "background check",
-             "prep me for", "research [company]", "research [person]",
-             "competitor research", "investor diligence", "interview prep"]
+             "prep me for", "competitor research", "investor diligence",
+             "interview prep", "research my competitor", "background on"]
 }
 
+# Signals are case-insensitive literal phrases (multi-word substring match).
+# Bracketed placeholders (e.g., "research [company]") are intentionally NOT
+# used as signals — they over-trigger on generic "research X" queries that
+# should fall back to general research, not auto-route to dossier. Specific
+# phrases pair the verb with the noun (e.g., "dossier on", "background on",
+# "competitor research") and route reliably.
+
 For each specialist S:
-  score[S] = count of SIGNALS[S] phrases matched in user's question (case-insensitive)
+  score[S] = count of SIGNALS[S] phrases matched in user's question (case-insensitive substring)
 
 if max(score) >= 2:
   route_to = argmax(score)
@@ -320,8 +328,9 @@ description: "Default entry point for any research request — a hybrid router t
 - Running fallback when a specialist would clearly do better
 - Fabricating sources in fallback when search is thin
 - Skipping audit log in fallback mode
-- Treating "research [company]" as fallback when `dossier` is the right specialist
+- Treating "dossier on [company]" or "background check on [entity]" as fallback when `dossier` is the right specialist (the verb-noun-paired phrase, not the generic "research X" form, is what routes)
 - Treating "what are people saying about X" as fallback when `pulse` is the right specialist
+- Auto-routing generic "research [topic]" queries to a specialist when the user hasn't paired the verb with a specialist-specific noun (e.g., "research Microsoft" alone is ambiguous — could be dossier or general; ask Q3 instead of guessing)
 
 ## Validation Checklist (Run Before Delivery)
 

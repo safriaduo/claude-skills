@@ -58,7 +58,7 @@ The generated skill must follow this structure:
 
 ```
 1. Overview + value proposition
-2. Data Integrity Principles
+2. Agent Integrity Rules
 3. Phase 0: Grill-Me Intake (3 forcing questions before parsing)
 4. Phase 1: Parse the Syllabus
 5. Phase 2: Group Topics + Confirm with User (grill-me forcing options)
@@ -208,7 +208,7 @@ Document the JSON input schema explicitly:
 
 ## Source Discipline Rules (Must Be Stated)
 
-The skill must include an explicit “Data Integrity Principles” block:
+The skill must include an explicit "Agent Integrity Rules" block (research-pack convention):
 
 - **Only use what Consensus returns** — Every paper title, author, journal, year, URL must come from this session’s tool calls. Training-knowledge papers labeled `[Not from Consensus — model knowledge]` and excluded.
 - **Confirm before moving on** — A search isn’t complete until response received and inspected.
@@ -217,14 +217,15 @@ The skill must include an explicit “Data Integrity Principles” block:
 
 ## Trigger Phrases (for frontmatter description)
 
-- “find papers for my course”
-- “create a reading list from this syllabus”
-- “recent research for my class”
-- “supplementary readings”
-- “find journal articles for these topics”
-- “what recent papers cover this material”
-- “any new research on these course topics”
-- “update my syllabus with recent papers”
+- "syllabus reading list"
+- "find papers for my course"
+- "create a reading list from this syllabus"
+- "recent research for my class"
+- "supplementary readings"
+- "find journal articles for these topics"
+- "what recent papers cover this material"
+- "any new research on these course topics"
+- "update my syllabus with recent papers"
 - Casual mentions when syllabus is attached
 
 ## Quality Bars (Must Be Documented With Examples)
@@ -289,7 +290,7 @@ description: "Generates a curated supplementary reading list from any course syl
 - [ ] SKILL.md frontmatter parses as YAML (name: syllabus)
 - [ ] Output target path uses `${SKILLS_DIR}/syllabus/SKILL.md`
 - [ ] SKILL.md word count 1,800–2,500
-- [ ] Data Integrity Principles block present
+- [ ] Agent Integrity Rules block present
 - [ ] Grill-me Phase 0 intake: 3 forcing questions (input format, audience, year range)
 - [ ] Q2 (audience) drives summary jargon level + discussion-question complexity
 - [ ] Q3 (year range) drives year_min on every Consensus search (default 2 years)

@@ -177,11 +177,12 @@ Include the full mechanism table: F31/F32, T32, R03, R21, K01/K08/K23, K99/R00, 
 
 ## Trigger Phrases (for frontmatter description)
 
-- “find grants for my research idea”
-- “what grants match my research”
-- “help me find NIH funding”
-- “grant opportunities for my research”
-- “NIH funding for [topic]”
+- "grants for [topic]"
+- "find grants for my research idea"
+- "what grants match my research"
+- "help me find NIH funding"
+- "grant opportunities for my research"
+- "NIH funding for [topic]"
 - Any grant-related request where speed and clarity matter
 
 ## Error Handling Requirements

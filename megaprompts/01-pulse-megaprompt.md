@@ -31,16 +31,27 @@ The generated skill must follow this exact structure:
 
 ```
 1. Invocation (how triggers route to this skill)
-2. Phase 0: Grill-Me Intake (2–4 forcing questions)
-3. Pre-flight (validate topic, set time window, plan phases)
-4. Phase 1: Reddit (run in parallel with HN + Web)
-5. Phase 2: Hacker News (parallel)
-6. Phase 3: Web Search (parallel)
-7. Phase 4: X/Twitter (sequential, optional)
-8. Synthesis (cross-platform analysis)
-9. Output (file + chat delivery)
-10. Troubleshooting (documented failure modes)
+2. Agent Integrity Rules (research-pack conventions)
+3. Phase 0: Grill-Me Intake (2–4 forcing questions)
+4. Pre-flight (validate topic, set time window, plan phases)
+5. Phase 1: Reddit (run in parallel with HN + Web)
+6. Phase 2: Hacker News (parallel)
+7. Phase 3: Web Search (parallel)
+8. Phase 4: X/Twitter (sequential, optional)
+9. Synthesis (cross-platform analysis)
+10. Output (file + chat delivery)
+11. Troubleshooting (documented failure modes)
 ```
+
+## Research-Pack Conventions (Inherited)
+
+The skill must include the standard "Agent Integrity Rules" block per the research-pack convention:
+
+- **Execution discipline**: Phases 1–3 run in parallel (Reddit + HN + Web are independent). Within each phase, sequential calls only. 1 q/sec rate limit per platform. Confirm response received before next call within the same phase.
+- **Source discipline**: Cite only sources returned by this session's tool calls. Training knowledge labeled `[Background — not from search]` and excluded from primary findings count.
+- **Three-count tracking**: Queries sent / sources received (shown) / sources cited. Surfaced in audit log inline in the synthesis section.
+- **Retry policy**: On failure → wait 3s → retry once → log. After 3 consecutive failures across all sources: stop, alert user, share what was collected.
+- **Plan-tier detection**: Reddit + HN are unauthenticated public JSON APIs (rate-limited per IP, not per plan). Surface rate-limit signals from headers when available; degrade gracefully otherwise.
 
 ## Grill-Me Intake Specification
 
@@ -198,6 +209,12 @@ description: "Multi-source recency research skill that takes the pulse of any to
 
 - [ ] Frontmatter parses as YAML
 - [ ] Word count 1,800–2,500
+- [ ] Agent Integrity Rules block present (research-pack convention)
+- [ ] Three-count tracking (sent / received / cited) stated
+- [ ] 1 q/sec per-platform rate limit stated (parallel across platforms; sequential within)
+- [ ] Retry-once-after-3s policy documented
+- [ ] Stop-after-3-consecutive-failures policy documented
+- [ ] Source discipline (cite only session-call results) stated
 - [ ] Grill-me intake: 2–4 questions, one-at-a-time, with "why I'm asking" per question
 - [ ] Q1 (topic) refuses vague answers
 - [ ] Q2 (angle) forcing format with 5 choices

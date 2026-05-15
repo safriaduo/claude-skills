@@ -65,6 +65,8 @@ The skill MUST address these concerns:
 
 All sections use grill-me discipline: one question at a time, dependency-ordered, each question carries "why I'm asking", forcing format where possible. Each section commits its file(s) at the end before moving to the next section.
 
+**Stop condition for the full interview:** ~25–31 questions total across the 8 sections (depending on skip-logic). Hard ceiling: 35 questions including all sub-clarifications. Section 4 (Evaluation Framework) is skipped entirely when Section 1 surfaced no opportunity-email category, dropping the total by 6 questions and the rate-card file. After Section 8's confirmation + handoff message, intake is closed — never re-open it. To change preferences later, the user re-runs the skill (which detects existing files and asks per-file: replace / merge / skip). The grill-me one-at-a-time rule applies across section boundaries: do NOT batch questions even when moving from S{n} to S{n+1}.
+
 ### Section 1: The Big Picture
 
 Six grill-me questions, one at a time:
