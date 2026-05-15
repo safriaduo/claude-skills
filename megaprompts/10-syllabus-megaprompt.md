@@ -1,15 +1,15 @@
-# Mega Prompt: Recommended Reading List Skill
+# Mega Prompt: Syllabus — Course Supplementary Reading List Skill
 
 ## Role
 
-You are a **Skill Architect** specializing in academic curriculum workflows. Generate a production-grade, distributable Claude skill that takes a course syllabus and produces a curated supplementary reading list of recent peer-reviewed research as a professionally formatted Word document.
+You are a **Skill Architect** specializing in academic curriculum workflows. Generate a production-grade, distributable Claude skill that takes a course syllabus and produces a curated supplementary reading list of recent peer-reviewed research as a professionally formatted Word document. The skill is named for its input (the syllabus the user has on their desk), not its output — the input is the memorable handle.
 
 ## Output Target
 
 **Two files:**
 
-- `${SKILLS_DIR}/recommended-reading-list/SKILL.md` (main skill, ~2,000 words)
-- `${SKILLS_DIR}/recommended-reading-list/scripts/generate_reading_list.js` (bundled DOCX generator, ~300 lines)
+- `${SKILLS_DIR}/syllabus/SKILL.md` (main skill, ~2,000 words)
+- `${SKILLS_DIR}/syllabus/scripts/generate_reading_list.js` (bundled DOCX generator, ~300 lines)
 
 Word budget for SKILL.md: 1,800–2,200. Hard ceiling: 2,500.
 
@@ -59,13 +59,72 @@ The generated skill must follow this structure:
 ```
 1. Overview + value proposition
 2. Data Integrity Principles
-3. Phase 1: Parse the Syllabus
-4. Phase 2: Search Consensus for Each Section (with rate limit + failure handling)
-5. Phase 3: Write Summaries and Discussion Questions
-6. Phase 4: Generate the .docx Document (via bundled script)
-7. Phase 5: Deliver to User (file + audit summary)
-8. Important Notes (year range, tier, languages, file types)
+3. Phase 0: Grill-Me Intake (3 forcing questions before parsing)
+4. Phase 1: Parse the Syllabus
+5. Phase 2: Group Topics + Confirm with User (grill-me forcing options)
+6. Phase 3: Search Consensus for Each Section (with rate limit + failure handling)
+7. Phase 4: Write Summaries and Discussion Questions
+8. Phase 5: Generate the .docx Document (via bundled script)
+9. Phase 6: Deliver to User (file + audit summary)
+10. Important Notes (year range, tier, languages, file types)
 ```
+
+## Grill-Me Intake Specification
+
+Three forcing questions before parsing the syllabus, plus the existing group-and-confirm checkpoint re-described in grill-me discipline. Each carries "why I'm asking".
+
+### Q1 (root) — Syllabus input
+
+> **Provide the syllabus — pick one:**
+> 1. File path (PDF, DOCX, text) — I'll read it
+> 2. Pasted content — paste below
+> 3. Image of a printed syllabus — attach the image
+>
+> *Why I'm asking:* Each format needs a different reader (PDF / DOCX parser / vision). Picking upfront prevents wasted attempts.
+
+Forcing choice. Refuse to start without a syllabus.
+
+### Q2 (depends on Q1) — Course audience
+
+> **Course audience — pick one:**
+> 1. Undergraduate (intro level)
+> 2. Undergraduate (advanced / upper division)
+> 3. Graduate (Masters / early PhD)
+> 4. Graduate (doctoral / advanced)
+> 5. Professional / continuing education
+> 6. Mixed
+>
+> *Why I'm asking:* Audience dictates summary jargon level and discussion-question complexity. Undergrad summaries define every term; grad summaries assume technical fluency. Discussion questions for undergrads test analysis; for grads test critique and extension.
+
+Forcing choice.
+
+### Q3 (depends on Q1) — Year range
+
+> **Year range for papers — pick one:**
+> 1. Last 1 year (most recent only)
+> 2. Last 2 years (default — recent + a year of context)
+> 3. Last 5 years (broader, includes foundational recent work)
+>
+> *Why I'm asking:* Reading lists go stale fast. 1-year filters keep things fresh; 5-year filters surface foundational recent work that's already standard. Drives the year_min parameter on every Consensus search.
+
+Forcing choice with default (last 2 years).
+
+**Stop condition:** 3 questions max before Phase 1. The post-Phase-2 group-and-confirm checkpoint is its own grill-me moment.
+
+## Grill-Me Group-and-Confirm Checkpoint (Phase 2)
+
+After parsing the syllabus and producing the proposed section grouping (6–12 sections), present as a forcing checkpoint:
+
+> **Proposed sections: [list with item counts]. Pick one:**
+> 1. "Looks good — proceed with these sections"
+> 2. "Merge sections [X] and [Y]"
+> 3. "Split section [X] into two"
+> 4. "Add a section for [topic]"
+> 5. "Remove section [X]"
+>
+> *Why I'm asking:* Grouping drives search allocation. Wrong grouping wastes the search budget on bad clusters. This is the last cheap moment to correct course before searches consume Consensus calls.
+
+Wait for explicit user choice. Refuse to start Phase 3 without confirmation.
 
 ## Critical Improvements Over Naive Implementation
 
@@ -209,8 +268,8 @@ Document at top:
 
 ```yaml
 ---
-name: recommended-reading-list
-description: "Generates a curated supplementary reading list from any course syllabus using Consensus academic search. Parses the syllabus to extract topics and learning outcomes, searches Consensus for recent peer-reviewed papers per topic, and produces a professionally formatted .docx with clickable Consensus links, plain-language summaries, and discussion questions tied to course learning goals. Triggers whenever a user uploads a syllabus, course outline, or curriculum document and wants supplementary readings. Also triggers on: 'find papers for my course', 'create a reading list from this syllabus', 'recent research for my class', 'supplementary readings', 'find journal articles for these topics', 'what recent papers cover this material', 'any new research on these course topics', 'update my syllabus with recent papers'. Even casual mentions when a syllabus is attached should trigger this skill."
+name: syllabus
+description: "Generates a curated supplementary reading list from any course syllabus using Consensus academic search. Grill-me intake (syllabus input format + course audience + year range) plus a grouping forcing-options checkpoint before any search runs — so the reading list matches the course's level and recency need. Parses the syllabus to extract topics and learning outcomes, searches Consensus for recent peer-reviewed papers per topic, and produces a professionally formatted .docx with clickable Consensus links, plain-language summaries calibrated to audience level, and Bloom-higher-order discussion questions tied to course learning goals. Triggers whenever a user uploads a syllabus, course outline, or curriculum document and wants supplementary readings. Also triggers on: 'syllabus reading list', 'find papers for my course', 'create a reading list from this syllabus', 'recent research for my class', 'supplementary readings', 'find journal articles for these topics', 'what recent papers cover this material', 'any new research on these course topics', 'update my syllabus with recent papers'. Even casual mentions when a syllabus is attached should trigger this skill."
 ---
 ```
 
@@ -227,9 +286,14 @@ description: "Generates a curated supplementary reading list from any course syl
 
 ## Validation Checklist (Run Before Delivery)
 
-- [ ] SKILL.md frontmatter parses as YAML
+- [ ] SKILL.md frontmatter parses as YAML (name: syllabus)
+- [ ] Output target path uses `${SKILLS_DIR}/syllabus/SKILL.md`
 - [ ] SKILL.md word count 1,800–2,500
 - [ ] Data Integrity Principles block present
+- [ ] Grill-me Phase 0 intake: 3 forcing questions (input format, audience, year range)
+- [ ] Q2 (audience) drives summary jargon level + discussion-question complexity
+- [ ] Q3 (year range) drives year_min on every Consensus search (default 2 years)
+- [ ] Group-and-confirm checkpoint described as grill-me forcing options (proceed / merge / split / add / remove)
 - [ ] Applied-domain weaving documented with examples
 - [ ] Sequential execution + 1 query/sec rate limit stated
 - [ ] Plan-tier awareness (3/search free, more for Pro) documented
