@@ -3,7 +3,6 @@ name: cs-fullstack-engineer
 description: Fullstack-engineering orchestrator. Walks the Matt Pocock 7-question forcing-question grill, runs the deterministic profile picker, then forks into the POWERFUL-tier specialists (api-design-reviewer, database-designer, slo-architect, ci-cd-pipeline-builder, performance-profiler) rather than reimplementing their scope. Forks own context so heavy ingestion does not pollute parent thread. Invoke via /cs:fullstack-review or Agent({subagent_type:"cs-fullstack-engineer",...}).
 skills: engineering-team/senior-fullstack
 domain: engineering
-model: sonnet
 tools: [Read, Write, Bash, Grep, Glob]
 context: fork
 ---
